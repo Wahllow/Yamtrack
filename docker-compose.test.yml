@@ -1,0 +1,12 @@
+# Run the test suite in a throwaway container with all deps baked in.
+# No Redis service: test_settings uses fakeredis + eager Celery.
+#   docker compose -f docker-compose.test.yml run --rm tests            # full suite
+#   docker compose -f docker-compose.test.yml run --rm tests ruff check .
+services:
+  tests:
+    build:
+      context: .
+      dockerfile: Dockerfile.test
+    image: yamtrack-test
+    environment:
+      - SECRET=test-secret
