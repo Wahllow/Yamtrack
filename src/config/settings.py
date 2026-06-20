@@ -1199,6 +1199,8 @@ if not REGISTRATION:
 
 REDIRECT_LOGIN_TO_SSO = config("REDIRECT_LOGIN_TO_SSO", default=False, cast=bool)
 
+DEMO_ENABLED = config("DEMO_ENABLED", default=True, cast=bool)
+
 # Configure LoginRequiredMiddleware to exclude static files
 LOGIN_REQUIRED_EXEMPT = [
     r"^/static/.*$",
