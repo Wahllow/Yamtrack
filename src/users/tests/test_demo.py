@@ -1,11 +1,12 @@
 from types import SimpleNamespace
 from unittest.mock import patch
 
+from django.apps import apps
 from django.contrib.auth import get_user_model
-from django.test import TestCase
+from django.test import TestCase, override_settings
 
 from users.demo import DEMO_EMAIL, DEMO_PASSWORD, DEMO_USERNAME, ensure_demo_user
-from users.signals import _demo_user_schema_ready
+from users.signals import _demo_user_schema_ready, ensure_demo_user_after_migrate
 
 
 class EnsureDemoUserTests(TestCase):
@@ -66,6 +67,24 @@ class EnsureDemoUserTests(TestCase):
             ),
         ):
             self.assertTrue(_demo_user_schema_ready())
+
+    @override_settings(TESTING=False, DEMO_ENABLED=False)
+    def test_receiver_skips_provisioning_when_demo_disabled(self):
+        """The demo account should not be created when DEMO_ENABLED is False."""
+        ensure_demo_user_after_migrate(sender=apps.get_app_config("users"))
+
+        self.assertFalse(
+            get_user_model().objects.filter(username=DEMO_USERNAME).exists(),
+        )
+
+    @override_settings(TESTING=False, DEMO_ENABLED=True)
+    def test_receiver_provisions_demo_user_when_demo_enabled(self):
+        """The demo account should be created when DEMO_ENABLED is True."""
+        ensure_demo_user_after_migrate(sender=apps.get_app_config("users"))
+
+        self.assertTrue(
+            get_user_model().objects.filter(username=DEMO_USERNAME).exists(),
+        )
 
     def test_normalizes_existing_demo_username(self):
         """Provisioning should reset a public demo account to the built-in state."""

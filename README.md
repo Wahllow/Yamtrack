@@ -271,6 +271,7 @@ The only universally required variable is `SECRET` for Django's secret key. For 
 - `TRAKT_API` / `TRAKT_API_SECRET` - Trakt private-profile OAuth imports
 - `URLS` - your public URL if using a reverse proxy, for example `https://yamtrack.mydomain.com`
 - `ADMIN_ENABLED` - set to `True` to enable the Django admin interface at `/admin/` (see the [Admin Guide](wiki/6.-Admin-and-Operations.md#admin-guide))
+- `DEMO_ENABLED` - set to `False` to skip creating the built-in `demo` account on startup (defaults to `True`)
 
 For a complete list, see the [Environment Variables documentation](wiki/6.-Admin-and-Operations.md#environment-variables).
 
